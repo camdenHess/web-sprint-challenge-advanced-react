@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+import axios from 'axios'
 
 // Suggested initial states
 const initialMessage = ''
@@ -7,8 +8,10 @@ const initialSteps = 0
 const initialIndex = 4 // the index the "B" is at
 
 export default function AppFunctional(props) {
-  // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
-  // You can delete them and build your own logic from scratch.
+  const [message, setMessage] = useState(initialMessage)
+  const [email, setEmail] = useState(initialEmail)
+  const [steps, setSteps] = useState(initialSteps)
+  const [index, setIndex] = useState(initialIndex)
 
   function getXY() {
     // It it not necessary to have a state to track the coordinates.
@@ -23,17 +26,42 @@ export default function AppFunctional(props) {
 
   function reset() {
     // Use this helper to reset all states to their initial values.
+    setIndex(initialIndex)
   }
 
   function getNextIndex(direction) {
     // This helper takes a direction ("left", "up", etc) and calculates what the next index
     // of the "B" would be. If the move is impossible because we are at the edge of the grid,
     // this helper should return the current index unchanged.
+    let newIndex
+    if (direction === 'up') {
+      if (index < 3) return index
+      newIndex = index - 3
+      return newIndex
+    }
+    if (direction === 'left') {
+      if (index === 0 || index === 3 || index === 6) return index
+      newIndex = index - 1
+      return newIndex
+    }
+    if (direction === 'right') {
+      if (index === 2 || index === 5 || index === 8) return index
+      newIndex = index + 1
+      return newIndex
+    }
+    if (direction === 'down') {
+      if (index > 5) return index
+      newIndex = index + 3
+      return newIndex
+    }
   }
 
   function move(evt) {
     // This event handler can use the helper above to obtain a new index for the "B",
     // and change any states accordingly.
+    const { id } = evt.target
+    console.log(id)
+    setIndex(getNextIndex(id))
   }
 
   function onChange(evt) {
@@ -63,11 +91,11 @@ export default function AppFunctional(props) {
         <h3 id="message"></h3>
       </div>
       <div id="keypad">
-        <button id="left">LEFT</button>
-        <button id="up">UP</button>
-        <button id="right">RIGHT</button>
-        <button id="down">DOWN</button>
-        <button id="reset">reset</button>
+        <button onClick={move} id="left">LEFT</button>
+        <button onClick={move} id="up">UP</button>
+        <button onClick={move} id="right">RIGHT</button>
+        <button onClick={move} id="down">DOWN</button>
+        <button onClick={reset} id="reset">reset</button>
       </div>
       <form>
         <input id="email" type="email" placeholder="type email"></input>
