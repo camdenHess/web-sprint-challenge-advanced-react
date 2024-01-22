@@ -40,6 +40,7 @@ export default function AppFunctional(props) {
     setIndex(initialIndex)
     setSteps(initialSteps)
     setMessage(initialMessage)
+    setEmail(initialEmail)
   }
 
   function getNextIndex(direction) {
@@ -97,16 +98,26 @@ export default function AppFunctional(props) {
   function onSubmit(evt) {
     // Use a POST request to send a payload to the server.
     evt.preventDefault()
+    let xyArray = getXY(index)
+    let submitForm = {x: Number(xyArray[0]), y: Number(xyArray[1]), steps: steps, email: email}
 
-
-    setEmail(initialEmail)
+    axios.post('http://localhost:9000/api/result', submitForm)
+      .then(res => {
+        setMessage(res.data.message)
+        setSteps(initialSteps)
+        setEmail(initialEmail)
+        setIndex(initialIndex)
+      })
+      .catch(err => {
+        setMessage(err.response.data.message)
+      })
   }
 
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">{getXYMessage()}</h3>
-        <h3 id="steps">You moved {steps} times</h3>
+        <h3 id="steps">You moved {steps === 1 ? `${steps} time` : `${steps} times`} </h3>
       </div>
       <div id="grid">
         {
