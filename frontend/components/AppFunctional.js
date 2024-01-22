@@ -32,7 +32,7 @@ export default function AppFunctional(props) {
     // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
     // returns the fully constructed string.
     let xyArray = getXY(index)
-    return `Coordinates (${xyArray[0]}, ${xyArray[1]})`
+    return `Coordinates (${Number(xyArray[0])}, ${Number(xyArray[1])})`
   }
 
   function reset() {
@@ -117,7 +117,7 @@ export default function AppFunctional(props) {
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">{getXYMessage()}</h3>
-        <h3 id="steps">You moved {steps === 1 ? `${steps} time` : `${steps} times`} </h3>
+        <h3 id="steps">You moved {steps === 1 ? `${steps} time` : `${steps} times`}</h3>
       </div>
       <div id="grid">
         {
