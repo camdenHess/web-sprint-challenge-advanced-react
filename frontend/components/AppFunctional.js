@@ -19,20 +19,19 @@ export default function AppFunctional(props) {
   function getXY(idx) {
     // It it not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
-    let xy =[]
     const newCoordinates = grids[idx]
     let coordArray = newCoordinates.split('')
-    xy.push(coordArray[1])
-    xy.push(coordArray[4])
-    return xy
+    let x = Number(coordArray[1])
+    let y = Number(coordArray[4])
+    return `(${x}, ${y})`
   }
 
   function getXYMessage() {
     // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
     // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
     // returns the fully constructed string.
-    let xyArray = getXY(index)
-    return `Coordinates (${Number(xyArray[0])}, ${Number(xyArray[1])})`
+    let xy = getXY(index)
+    return xy
   }
 
   function reset() {
@@ -98,15 +97,14 @@ export default function AppFunctional(props) {
   function onSubmit(evt) {
     // Use a POST request to send a payload to the server.
     evt.preventDefault()
-    let xyArray = getXY(index)
-    let submitForm = {x: Number(xyArray[0]), y: Number(xyArray[1]), steps: steps, email: email}
+    let xyCoord = getXY(index)
+
+    let submitForm = {x: Number(xyCoord[1]), y: Number(xyCoord[4]), steps: steps, email: email}
 
     axios.post('http://localhost:9000/api/result', submitForm)
       .then(res => {
         setMessage(res.data.message)
-        setSteps(initialSteps)
         setEmail(initialEmail)
-        setIndex(initialIndex)
       })
       .catch(err => {
         setMessage(err.response.data.message)
@@ -116,7 +114,7 @@ export default function AppFunctional(props) {
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
-        <h3 id="coordinates">{getXYMessage()}</h3>
+        <h3 id="coordinates">Coordinates {getXYMessage()}</h3>
         <h3 id="steps">You moved {steps === 1 ? `${steps} time` : `${steps} times`}</h3>
       </div>
       <div id="grid">
